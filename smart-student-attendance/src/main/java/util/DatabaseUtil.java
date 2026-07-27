@@ -1,8 +1,10 @@
 package util;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DatabaseUtil {
 
@@ -21,23 +23,39 @@ public class DatabaseUtil {
     private static final String DB_PASSWORD =
             System.getenv().getOrDefault("DB_PASSWORD", "");
 
-    private static final String URL =
-            "jdbc:mysql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME
-            + "?sslMode=REQUIRED"
-            + "&serverTimezone=UTC"
-            + "&characterEncoding=UTF-8"
-            + "&connectTimeout=30000"
-            + "&socketTimeout=30000";
+    private static HikariDataSource dataSource;
 
     static {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("MySQL Driver not found", e);
-        }
+
+        HikariConfig config = new HikariConfig();
+
+        config.setJdbcUrl(
+                "jdbc:mysql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME
+                + "?sslMode=REQUIRED"
+                + "&serverTimezone=UTC"
+                + "&characterEncoding=UTF-8"
+                + "&cachePrepStmts=true"
+                + "&prepStmtCacheSize=250"
+                + "&prepStmtCacheSqlLimit=2048");
+
+        config.setUsername(DB_USER);
+        config.setPassword(DB_PASSWORD);
+
+        config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+
+        // Connection Pool Settings
+        config.setMaximumPoolSize(10);
+        config.setMinimumIdle(2);
+        config.setIdleTimeout(300000);
+        config.setMaxLifetime(1800000);
+        config.setConnectionTimeout(10000);
+
+        config.setPoolName("SSA-HikariPool");
+
+        dataSource = new HikariDataSource(config);
     }
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, DB_USER, DB_PASSWORD);
+        return dataSource.getConnection();
     }
 }
