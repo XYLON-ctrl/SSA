@@ -5,7 +5,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.Aishwarya5468</groupId>
+    <groupId>io.github.XYLON-ctrl</groupId>
     <artifactId>smart-student-attendance</artifactId>
     <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
