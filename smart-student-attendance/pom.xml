@@ -4,7 +4,6 @@
          http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>io.github.XYLON-ctrl</groupId>
     <artifactId>smart-student-attendance</artifactId>
     <packaging>war</packaging>
